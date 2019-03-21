@@ -1,5 +1,6 @@
 package com.uniware.hackathonpractice.user.web;
 
+import com.uniware.hackathonpractice.user.exceptions.EmailNotValidException;
 import com.uniware.hackathonpractice.user.exceptions.UserNameIsTakenException;
 import com.uniware.hackathonpractice.user.exceptions.UserRoleNotFoundException;
 import com.uniware.hackathonpractice.user.util.ErrorResponse;
@@ -31,6 +32,13 @@ public class ApplicationUserControllerAdvice {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     ErrorResponse userRoleNotFoundHandler(AccessDeniedException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(EmailNotValidException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    ErrorResponse emailNotValidHandler(EmailNotValidException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 

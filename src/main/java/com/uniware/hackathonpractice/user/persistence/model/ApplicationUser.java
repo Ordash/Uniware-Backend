@@ -25,6 +25,9 @@ public class ApplicationUser {
     @NotBlank
     @NotNull
     private String password;
+    @NotBlank
+    @NotNull
+    private String email;
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinTable(

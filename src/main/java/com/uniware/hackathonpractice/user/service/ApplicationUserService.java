@@ -1,6 +1,7 @@
 package com.uniware.hackathonpractice.user.service;
 
 import com.uniware.hackathonpractice.security.model.UserContext;
+import com.uniware.hackathonpractice.user.exceptions.EmailNotValidException;
 import com.uniware.hackathonpractice.user.exceptions.UserNameIsTakenException;
 import com.uniware.hackathonpractice.user.exceptions.UserRoleNotFoundException;
 import com.uniware.hackathonpractice.user.persistence.model.ApplicationUser;
@@ -17,7 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,35 +54,35 @@ public class ApplicationUserService {
     }
 
     public RegisterResponse registerApplicationUser(ApplicationUserDTO applicationUserDTO)
-            throws UserNameIsTakenException, UserRoleNotFoundException {
+            throws UserNameIsTakenException, UserRoleNotFoundException, EmailNotValidException {
 
-        if (!existsByUsername(applicationUserDTO.getUsername())) {
+        if (applicationUserDTO.getEmail().matches("^[_A-Za-z0-9]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")) {
+            if (!existsByUsername(applicationUserDTO.getUsername())) {
 
-            final ApplicationUser applicationUser = new ApplicationUser();
-            //TODO this is used only for development purpose
-            ApplicationUserRole applicationUserRole = new ApplicationUserRole(1L, Role.USER);
-            roleService.saveRole(applicationUserRole);
-            List<ApplicationUserRole> userRoles = new ArrayList<>();
-            userRoles.add(roleService.findById(1L));
+                final ApplicationUser applicationUser = new ApplicationUser();
+                //TODO this is used only for development purpose
+                ApplicationUserRole applicationUserRole = new ApplicationUserRole(1L, Role.USER);
+                roleService.saveRole(applicationUserRole);
+                List<ApplicationUserRole> userRoles = new ArrayList<>();
+                userRoles.add(roleService.findById(1L));
 
-            applicationUser.setUsername(applicationUserDTO.getUsername());
-            applicationUser.setPassword(encoder.encode(applicationUserDTO.getPassword()));
-            applicationUser.setRoles(userRoles);
+                applicationUser.setUsername(applicationUserDTO.getUsername());
+                applicationUser.setPassword(encoder.encode(applicationUserDTO.getPassword()));
+                applicationUser.setEmail(applicationUserDTO.getEmail());
+                applicationUser.setRoles(userRoles);
 
-            applicationUserRepository.save(applicationUser);
+                applicationUserRepository.save(applicationUser);
 
-            return new RegisterResponse(applicationUser.getId(),
-                    applicationUser.getUsername());
+                return new RegisterResponse(applicationUser.getId(),
+                        applicationUser.getUsername());
+            }
+            throw new UserNameIsTakenException();
         }
-        throw new UserNameIsTakenException();
+        throw new EmailNotValidException("Not a valid email");
     }
 
     private Boolean existsByUsername(String username) {
         return applicationUserRepository.existsByUsername(username);
-    }
-
-    public List<String> findAllUsernames() {
-        List<ApplicationUser> allUsers = applicationUserRepository.findAll();
-        return allUsers.stream().map(ApplicationUser::getUsername).collect(Collectors.toList());
     }
 }
