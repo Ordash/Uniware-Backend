@@ -1,6 +1,7 @@
 package com.uniware.hackathonpractice.user.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.uniware.hackathonpractice.subject.persistence.model.Subject;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +29,14 @@ public class ApplicationUser {
     @NotBlank
     @NotNull
     private String email;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "app_user_subjects",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private List<Subject> subjects = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinTable(
