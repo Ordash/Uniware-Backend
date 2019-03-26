@@ -24,4 +24,5 @@ public class SubjectService {
     public List<Subject> findAll(){
         return subjectRepository.findAll();
     }
+
 }

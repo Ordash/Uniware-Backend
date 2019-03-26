@@ -1,5 +1,6 @@
 package com.uniware.hackathonpractice.subject.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.uniware.hackathonpractice.user.persistence.model.ApplicationUser;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Subject {
     private String name;
 
     @ManyToMany(mappedBy = "subjects")
+    @JsonIgnore
     private List<ApplicationUser> users = new ArrayList<>();
 
     public Subject() {
