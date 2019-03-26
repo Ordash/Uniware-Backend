@@ -5,10 +5,13 @@ import com.uniware.hackathonpractice.material.exception.MyFileNotFoundException;
 import com.uniware.hackathonpractice.material.exception.WrongExtensionException;
 import com.uniware.hackathonpractice.material.persistence.model.DBFile;
 import com.uniware.hackathonpractice.material.persistence.repository.DBFileRepository;
+import org.apache.tomcat.util.http.fileupload.FileUploadBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 public class DBFileStorageService {
@@ -20,8 +23,11 @@ public class DBFileStorageService {
         this.DBFileRepository = DBFileRepository;
     }
 
-    public DBFile storeFile(MultipartFile file) throws FileStorageException, WrongExtensionException {
+    public DBFile storeFile(MultipartFile file) throws FileStorageException, WrongExtensionException, IOException, FileUploadBase.FileSizeLimitExceededException {
 
+        if(file.getSize() > 5000000) {
+            throw new FileUploadBase.FileSizeLimitExceededException("File is too large", file.getSize(), 5000000L);
+        }
         String fileExtentions = ".jpg,.pdf";
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 

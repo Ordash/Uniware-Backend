@@ -20,4 +20,11 @@ public class Subject {
 
     @ManyToMany(mappedBy = "subjects")
     private List<ApplicationUser> users = new ArrayList<>();
+
+    public Subject() {
+    }
+
+    public Subject(String name) {
+        this.name = name;
+    }
 }

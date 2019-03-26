@@ -6,6 +6,7 @@ import com.uniware.hackathonpractice.material.persistence.model.DBFile;
 import com.uniware.hackathonpractice.material.service.DBFileStorageService;
 import com.uniware.hackathonpractice.material.utility.ErrorResponse;
 import com.uniware.hackathonpractice.material.utility.UploadFileResponse;
+import org.apache.tomcat.util.http.fileupload.FileUploadBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class FileController {
     }
 
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws FileStorageException, WrongExtensionException {
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) throws FileStorageException, WrongExtensionException, IOException, FileUploadBase.FileSizeLimitExceededException {
 
 
         DBFile dbFile = dbFileStorageService.storeFile(file);
@@ -55,7 +57,7 @@ public class FileController {
             UploadFileResponse uploadFileResponse = null;
             try {
                 uploadFileResponse = uploadFile(file);
-            } catch (FileStorageException | WrongExtensionException e) {
+            } catch (FileStorageException | WrongExtensionException | IOException | FileUploadBase.FileSizeLimitExceededException e) {
                 e.printStackTrace();
             }
             list.add(uploadFileResponse);
@@ -85,6 +87,13 @@ public class FileController {
     @ExceptionHandler(WrongExtensionException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ErrorResponse wrongExtensionHandler(WrongExtensionException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(FileUploadBase.FileSizeLimitExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ErrorResponse fileSizeTooLargeHandler(FileUploadBase.FileSizeLimitExceededException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 }
