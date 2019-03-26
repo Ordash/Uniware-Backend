@@ -9,6 +9,7 @@ import com.uniware.hackathonpractice.user.persistence.model.ApplicationUserRole;
 import com.uniware.hackathonpractice.user.persistence.repository.ApplicationUserRepository;
 import com.uniware.hackathonpractice.user.util.ApplicationUserDTO;
 import com.uniware.hackathonpractice.user.util.Role;
+import com.uniware.hackathonpractice.user.util.UserListDTO;
 import com.uniware.hackathonpractice.user.web.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -84,5 +85,11 @@ public class ApplicationUserService {
 
     private Boolean existsByUsername(String username) {
         return applicationUserRepository.existsByUsername(username);
+    }
+
+    public UserListDTO listUsers() {
+        UserListDTO userListDTO = new UserListDTO();
+        userListDTO.setUsers(applicationUserRepository.findAll().stream().map(ApplicationUser::getUsername).collect(Collectors.toList()));
+        return userListDTO;
     }
 }
