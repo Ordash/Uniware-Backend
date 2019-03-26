@@ -85,4 +85,8 @@ public class ApplicationUserService {
     private Boolean existsByUsername(String username) {
         return applicationUserRepository.existsByUsername(username);
     }
+
+    public void save(ApplicationUser applicationUser) {
+        applicationUserRepository.save(applicationUser);
+    }
 }
