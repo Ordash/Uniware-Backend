@@ -1,7 +1,7 @@
 package com.uniware.hackathonpractice.user.web;
 
 import com.uniware.hackathonpractice.user.exceptions.EmailNotValidException;
-import com.uniware.hackathonpractice.user.exceptions.UserNameIsTakenException;
+import com.uniware.hackathonpractice.user.exceptions.UserNameOrEmailIsTakenException;
 import com.uniware.hackathonpractice.user.exceptions.UserRoleNotFoundException;
 import com.uniware.hackathonpractice.user.service.ApplicationUserService;
 import com.uniware.hackathonpractice.user.util.ApplicationUserDTO;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/user")
 public class ApplicationUserController {
 
     private ApplicationUserService applicationUserService;
@@ -24,16 +23,21 @@ public class ApplicationUserController {
         this.applicationUserService = applicationUserService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/api/user/register")
     @ResponseStatus(HttpStatus.OK)
     public RegisterResponse registerUser(@RequestBody @Valid ApplicationUserDTO applicationUserDTO)
-            throws MethodArgumentNotValidException, UserNameIsTakenException, UserRoleNotFoundException, EmailNotValidException {
+            throws MethodArgumentNotValidException, UserNameOrEmailIsTakenException, UserRoleNotFoundException, EmailNotValidException {
         return applicationUserService.registerApplicationUser(applicationUserDTO);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/api/user/users")
     @ResponseStatus(HttpStatus.OK)
     public UserListDTO listUsers() {
         return applicationUserService.listUsers();
+    }
+
+    @RequestMapping(value="/confirm-account", method= {RequestMethod.GET})
+    public String confirmUserAccount(@RequestParam("token")String confirmationToken) {
+        return applicationUserService.verifyEmail(confirmationToken);
     }
 }

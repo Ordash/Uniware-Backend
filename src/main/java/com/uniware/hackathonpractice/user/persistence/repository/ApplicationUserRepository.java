@@ -12,4 +12,8 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
 
     Boolean existsByUsername(String username);
 
+    ApplicationUser findByEmailIgnoreCase(String email);
+
+    Boolean existsByEmail(String email);
+
 }

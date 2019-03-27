@@ -38,6 +38,8 @@ public class AjaxAuthenticationProvider implements AuthenticationProvider {
 
         if (!encoder.matches(password, applicationUser.getPassword())) {
             throw new BadCredentialsException("Wrong Password");
+        } else if (!applicationUserService.findByUserName(username).isEnabled()) {
+            throw new BadCredentialsException("Verify your email first!");
         }
 
         UserContext userContext = applicationUserService.createUserContext(username);

@@ -29,6 +29,8 @@ public class ApplicationUser {
     @NotNull
     private String email;
 
+    private boolean enabled;
+
     @ManyToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinTable(
             name = "app_user_roles",
@@ -36,6 +38,10 @@ public class ApplicationUser {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonManagedReference
     private List<ApplicationUserRole> roles = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "applicationUser", targetEntity = ConfirmationToken.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ConfirmationToken confirmationToken;
 
     public void setRoles(List<ApplicationUserRole> roles) {
         this.roles = roles;

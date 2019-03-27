@@ -1,7 +1,7 @@
 package com.uniware.hackathonpractice.user.web;
 
 import com.uniware.hackathonpractice.user.exceptions.EmailNotValidException;
-import com.uniware.hackathonpractice.user.exceptions.UserNameIsTakenException;
+import com.uniware.hackathonpractice.user.exceptions.UserNameOrEmailIsTakenException;
 import com.uniware.hackathonpractice.user.exceptions.UserRoleNotFoundException;
 import com.uniware.hackathonpractice.user.util.ErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ApplicationUserControllerAdvice {
 
     @ResponseBody
-    @ExceptionHandler(UserNameIsTakenException.class)
+    @ExceptionHandler(UserNameOrEmailIsTakenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     ErrorResponse usernameIsTakenHandler() {
-        return new ErrorResponse("Username already taken, please choose an other one.");
+        return new ErrorResponse("Username or Email already taken, please choose another one.");
     }
 
     @ResponseBody
