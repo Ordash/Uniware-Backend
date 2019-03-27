@@ -22,17 +22,16 @@ public class ConfirmationToken {
 
     private String confirmationToken;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdDate;
+    private Long createdAt;
 
     @JsonBackReference
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "application_user_id")
     private ApplicationUser applicationUser;
 
     public ConfirmationToken(ApplicationUser user) {
         this.applicationUser = user;
-        createdDate = new Date();
+        createdAt = System.currentTimeMillis();
         confirmationToken = UUID.randomUUID().toString();
     }
 }

@@ -131,4 +131,6 @@ public class ApplicationUserService {
         userListDTO.setUsers(applicationUserRepository.findAll().stream().map(ApplicationUser::getUsername).collect(Collectors.toList()));
         return userListDTO;
     }
+
+
 }

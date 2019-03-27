@@ -1,6 +1,7 @@
 package com.uniware.hackathonpractice.user.persistence.repository;
 
 import com.uniware.hackathonpractice.user.persistence.model.ApplicationUser;
+import com.uniware.hackathonpractice.user.persistence.model.ConfirmationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +16,7 @@ public interface ApplicationUserRepository extends JpaRepository<ApplicationUser
     ApplicationUser findByEmailIgnoreCase(String email);
 
     Boolean existsByEmail(String email);
+
+    void deleteByConfirmationToken(ConfirmationToken confirmationToken);
 
 }

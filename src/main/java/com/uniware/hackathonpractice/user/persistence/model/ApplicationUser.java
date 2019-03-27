@@ -40,7 +40,7 @@ public class ApplicationUser {
     private List<ApplicationUserRole> roles = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToOne(mappedBy = "applicationUser", targetEntity = ConfirmationToken.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "applicationUser", targetEntity = ConfirmationToken.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private ConfirmationToken confirmationToken;
 
     public void setRoles(List<ApplicationUserRole> roles) {
